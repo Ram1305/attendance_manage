@@ -1,0 +1,51 @@
+========================================
+FACE RECOGNITION ATTENDANCE SYSTEM
+========================================
+
+QUICK START GUIDE:
+------------------
+
+1. INSTALL PYTHON (if not installed):
+   - Download from: https://www.python.org/downloads/
+   - Install Python 3.8 or higher
+   - IMPORTANT: Check "Add Python to PATH" during installation
+   - Restart your terminal after installation
+
+2. START BACKEND SERVER:
+   Option A: Double-click "START_BACKEND.bat"
+   Option B: Run in terminal:
+      cd backend
+      pip install -r requirements.txt
+      python app.py
+
+3. RUN FLUTTER APP:
+   In a NEW terminal window:
+      flutter run
+
+4. USE THE APP:
+   - Navigate to "Attendance" tab (bottom navigation)
+   - Register employees with face capture
+   - Mark attendance using camera
+   - View attendance history
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+- Python not found:
+  → Install Python and ensure it's in PATH
+  → Restart terminal after installation
+
+- Backend connection error:
+  → Make sure backend is running on http://localhost:5000
+  → Check firewall settings
+  → For physical device, update IP in lib/services/api_service.dart
+
+- Camera not working:
+  → Grant camera permissions in device settings
+  → Restart the app
+
+========================================
+For more details, see README_ATTENDANCE.md
+========================================
+

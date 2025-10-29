@@ -1,0 +1,24 @@
+# Backend Server Started Successfully!
+
+## Your Computer's IP Address: 192.168.29.61
+
+## Important:
+- If using Android Emulator: The API is already configured to use `10.0.2.2:5000`
+- If using Physical Android Device: The API is configured to use `192.168.29.61:5000`
+- Make sure your phone and computer are on the same WiFi network
+
+## Backend Server:
+- Running on: http://localhost:5000
+- For physical device: http://192.168.29.61:5000
+- Health check: http://localhost:5000/health
+
+## Next Steps:
+1. Make sure your phone and computer are on the same WiFi network
+2. Restart your Flutter app (hot reload or restart)
+3. The app should now connect to the backend
+
+## Troubleshooting:
+- If connection refused: Make sure backend is running
+- Check firewall: Allow Python on port 5000
+- Verify IP: Both devices must be on same network
+
