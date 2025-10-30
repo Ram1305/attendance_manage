@@ -29,22 +29,56 @@ os.makedirs(ATTENDANCE_DIR, exist_ok=True)
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def detect_face(image_array):
-    """Detect face in image and return cropped face"""
+    """Detect face in image and return cropped face (with robust fallbacks)"""
+    try_variants = []
+    # Base grayscale
     gray = cv2.cvtColor(image_array, cv2.COLOR_RGB2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    
-    if len(faces) == 0:
-        return None
-    
-    # Get the largest face
-    face = max(faces, key=lambda x: x[2] * x[3])
-    x, y, w, h = face
-    
-    # Crop and resize face
-    face_roi = gray[y:y+h, x:x+w]
-    face_roi = cv2.resize(face_roi, (100, 100))
-    
-    return face_roi
+    try_variants.append(gray)
+
+    # Histogram equalization
+    try:
+        eq = cv2.equalizeHist(gray)
+        try_variants.append(eq)
+    except Exception:
+        pass
+
+    # CLAHE
+    try:
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        cl = clahe.apply(gray)
+        try_variants.append(cl)
+    except Exception:
+        pass
+
+    # Rotated variants (to handle device orientation)
+    try_variants.append(cv2.rotate(gray, cv2.ROTATE_90_CLOCKWISE))
+    try_variants.append(cv2.rotate(gray, cv2.ROTATE_90_COUNTERCLOCKWISE))
+
+    # Detection parameter sets from lenient to strict
+    param_sets = [
+        (1.1, 3),
+        (1.2, 4),
+        (1.3, 5),
+    ]
+
+    best_face = None
+    best_score = -1
+
+    for variant in try_variants:
+        for scale, neighbors in param_sets:
+            faces = face_cascade.detectMultiScale(variant, scale, neighbors)
+            if len(faces) == 0:
+                continue
+            # Choose largest area face
+            face = max(faces, key=lambda x: x[2] * x[3])
+            x, y, w, h = face
+            score = w * h
+            if score > best_score:
+                best_score = score
+                roi = variant[y:y+h, x:x+w]
+                best_face = cv2.resize(roi, (100, 100))
+
+    return best_face
 
 def calculate_face_features(face_image):
     """Calculate simple features from face image"""
